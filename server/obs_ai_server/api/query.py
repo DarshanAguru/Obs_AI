@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timedelta, timezone
-from typing import Any, List, Optional
+from typing import Any, List, Literal, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -182,7 +182,7 @@ def list_traces(
     max_duration_ms: Optional[float] = None,
     has_error: Optional[bool] = None,
     search: Optional[str] = None,
-    sort_by: str = Query(default="newest", enum=["newest", "oldest", "slowest", "fastest", "most_tokens", "most_cost", "most_spans", "error"]),
+    sort_by: Literal["newest", "oldest", "slowest", "fastest", "most_tokens", "most_cost", "most_spans", "error"] = Query(default="newest"),
     limit: int = Query(default=100, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
@@ -665,7 +665,7 @@ def list_errors(
 
 @router.get("/analytics/overview")
 def get_analytics_overview(
-    time_window: str = Query(default="24h", enum=["15m", "1h", "6h", "24h", "7d", "30d", "all"]),
+    time_window: Literal["15m", "1h", "6h", "24h", "7d", "30d", "all"] = Query(default="24h"),
     environment: Optional[str] = None,
     db: Session = Depends(get_db),
     project: Project = Depends(get_current_project),
