@@ -21,7 +21,7 @@ A clear and concise description of what you expected to happen.
 **Environment (please complete the following information):**
  - OS: [e.g. Linux, macOS, Windows]
  - Python Version: [e.g. 3.11, 3.12]
- - Obs_AI Version: [e.g. 0.0.1]
+ - Obs_AI Version: [e.g. 0.1.0]
 
 **Additional Context**
 Add any other context, code snippets, or error logs here.
