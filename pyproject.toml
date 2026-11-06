@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "obs-ai"
-version = "0.1.0"
+version = "0.1.1"
 description = "Open-source, self-hosted AI debugging and observability engine for LLMs, RAG, and autonomous agents."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -104,7 +104,6 @@ obs-ai-server = "obs_ai_server.main:start"
 obs_ai_server = "obs_ai_server.main:start"
 ai-obs-server = "obs_ai_server.main:start"
 ai_obs_server = "obs_ai_server.main:start"
-feenion-server = "obs_ai_server.main:start"
 
 [tool.setuptools.packages.find]
 where = ["sdk", "server"]
@@ -114,4 +113,3 @@ obs_ai = ["py.typed"]
 Obs_AI = ["py.typed"]
 ai_obs = ["py.typed"]
 AI_obs = ["py.typed"]
-feenion = ["py.typed"]

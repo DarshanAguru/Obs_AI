@@ -15,7 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { ObsAiIcon, ObsAiLogo } from '../common/FeenionLogo';
+import { ObsAiIcon, ObsAiLogo } from '../common/ObsAiLogo';
 import { X } from 'lucide-react';
 
 interface SidebarProps {

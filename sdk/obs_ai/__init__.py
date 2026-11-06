@@ -27,7 +27,6 @@ from .integrations import (
     ObsAICallbackHandler,
     AiObsCallbackHandler,
     AIObsCallbackHandler,
-    FeenionCallbackHandler,
 )
 
 from ._version import __version__
@@ -219,5 +218,4 @@ __all__ = [
     "ObsAICallbackHandler",
     "AiObsCallbackHandler",
     "AIObsCallbackHandler",
-    "FeenionCallbackHandler",
 ]

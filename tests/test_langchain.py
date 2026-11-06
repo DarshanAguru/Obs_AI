@@ -4,7 +4,6 @@ from obs_ai.integrations.langchain import (
     ObsAiCallbackHandler,
     ObsAICallbackHandler,
     AiObsCallbackHandler,
-    FeenionCallbackHandler,
     instrument_langchain,
 )
 from obs_ai import configure, tracer
@@ -67,6 +66,3 @@ def test_obs_ai_and_backward_compat_callback_handlers():
     
     h_aiobs = AiObsCallbackHandler(trace_name="test_ai_obs")
     assert isinstance(h_aiobs, ObsAiCallbackHandler)
-    
-    h_feenion = FeenionCallbackHandler(trace_name="test_feenion")
-    assert isinstance(h_feenion, ObsAiCallbackHandler)

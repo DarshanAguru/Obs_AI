@@ -6,7 +6,7 @@ def test_health():
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json()["status"] == "ok"
-        assert response.json()["version"] == "0.1.0"
+        assert response.json()["version"] == "0.1.1"
 
 def test_favicon_endpoints():
     with TestClient(app) as client:

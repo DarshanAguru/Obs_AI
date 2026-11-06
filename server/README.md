@@ -28,7 +28,7 @@ uvicorn obs_ai_server.main:app --host 0.0.0.0 --port 8000
 | `OBS_AI_ADMIN_USER` | `admin` | Admin dashboard username |
 | `OBS_AI_ADMIN_PASSWORD` | `admin` | Admin dashboard password |
 
-*(Note: Legacy `AI_OBS_*` and `FEENION_*` variables are also accepted for backwards compatibility.)*
+*(Note: Legacy `AI_OBS_*` variables are also accepted for backwards compatibility.)*
 
 ## API Endpoints Summary
 

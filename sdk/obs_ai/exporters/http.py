@@ -57,7 +57,6 @@ class HTTPExporter(Exporter):
         if api_key:
             headers["X-Obs-AI-Api-Key"] = api_key
             headers["X-AI-Obs-Api-Key"] = api_key
-            headers["X-Feenion-Api-Key"] = api_key
             headers["Authorization"] = f"Bearer {api_key}"
 
         if workspace_id:

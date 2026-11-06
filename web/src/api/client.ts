@@ -13,7 +13,7 @@ import {
 
 let currentProjectId: string =
   typeof window !== 'undefined'
-    ? localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id') || localStorage.getItem('feenion_selected_project_id') || 'default'
+    ? localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id') || 'default'
     : 'default';
 
 export const apiClient = {

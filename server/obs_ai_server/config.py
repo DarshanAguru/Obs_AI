@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Obs_AI Server"
-    app_version: str = "0.1.0"
+    app_version: str = "0.1.1"
 
     host: str = "0.0.0.0"
     port: int = 8000
@@ -26,9 +26,9 @@ class Settings(BaseSettings):
 
     def __init__(self, **values):
         super().__init__(**values)
-        # Backward compatibility for AI_OBS_* and FEENION_* environment variables
+        # Backward compatibility for legacy AI_OBS_* environment variables
         for key in ["database_url", "redis_url", "log_level", "retention_days", "host", "port"]:
-            legacy_val = os.getenv(f"AI_OBS_{key.upper()}") or os.getenv(f"FEENION_{key.upper()}")
+            legacy_val = os.getenv(f"AI_OBS_{key.upper()}")
             current_val = getattr(self, key)
             default_val = self.__class__.model_fields[key].default
             if legacy_val is not None and current_val == default_val:

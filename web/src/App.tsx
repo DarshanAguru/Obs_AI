@@ -34,37 +34,36 @@ export const App: React.FC = () => {
     return (
       (localStorage.getItem('obs_ai_active_tab') as NavigationTab) ||
       (localStorage.getItem('ai_obs_active_tab') as NavigationTab) ||
-      (localStorage.getItem('feenion_active_tab') as NavigationTab) ||
       'overview'
     );
   });
   const [selectedTraceId, setSelectedTraceId] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    return (localStorage.getItem('obs_ai_sidebar_collapsed') || localStorage.getItem('ai_obs_sidebar_collapsed') || localStorage.getItem('feenion_sidebar_collapsed')) === 'true';
+    return (localStorage.getItem('obs_ai_sidebar_collapsed') || localStorage.getItem('ai_obs_sidebar_collapsed')) === 'true';
   });
 
   // Global Context State (Workspace / Environment / Timeline)
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id') || localStorage.getItem('feenion_selected_project_id') || '';
+    return localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id') || '';
   });
   const [environment, setEnvironment] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_environment') || localStorage.getItem('ai_obs_environment') || localStorage.getItem('feenion_environment') || 'all';
+    return localStorage.getItem('obs_ai_environment') || localStorage.getItem('ai_obs_environment') || 'all';
   });
   const [timeRange, setTimeRange] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_time_range') || localStorage.getItem('ai_obs_time_range') || localStorage.getItem('feenion_time_range') || '24h';
+    return localStorage.getItem('obs_ai_time_range') || localStorage.getItem('ai_obs_time_range') || '24h';
   });
 
   // Filters State for Traces Explorer
   const [statusFilter, setStatusFilter] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_status_filter') || localStorage.getItem('ai_obs_status_filter') || localStorage.getItem('feenion_status_filter') || 'all';
+    return localStorage.getItem('obs_ai_status_filter') || localStorage.getItem('ai_obs_status_filter') || 'all';
   });
   const [spanTypeFilter, setSpanTypeFilter] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_span_type_filter') || localStorage.getItem('ai_obs_span_type_filter') || localStorage.getItem('feenion_span_type_filter') || 'all';
+    return localStorage.getItem('obs_ai_span_type_filter') || localStorage.getItem('ai_obs_span_type_filter') || 'all';
   });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>(() => {
-    return localStorage.getItem('obs_ai_sort_by') || localStorage.getItem('ai_obs_sort_by') || localStorage.getItem('feenion_sort_by') || 'newest';
+    return localStorage.getItem('obs_ai_sort_by') || localStorage.getItem('ai_obs_sort_by') || 'newest';
   });
 
   // Live Stream Feed State
@@ -139,11 +138,9 @@ export const App: React.FC = () => {
     const handleCurrencyChange = () => setCurrencyVersion(v => v + 1);
     window.addEventListener('obs_ai_currency_changed', handleCurrencyChange);
     window.addEventListener('ai_obs_currency_changed', handleCurrencyChange);
-    window.addEventListener('feenion_currency_changed', handleCurrencyChange);
     return () => {
       window.removeEventListener('obs_ai_currency_changed', handleCurrencyChange);
       window.removeEventListener('ai_obs_currency_changed', handleCurrencyChange);
-      window.removeEventListener('feenion_currency_changed', handleCurrencyChange);
     };
   }, []);
 
@@ -153,7 +150,7 @@ export const App: React.FC = () => {
       const projs = await apiClient.getProjects();
       setProjects(projs);
       if (projs.length > 0) {
-        const savedId = localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id') || localStorage.getItem('feenion_selected_project_id');
+        const savedId = localStorage.getItem('obs_ai_selected_project_id') || localStorage.getItem('ai_obs_selected_project_id');
         const matched =
           projs.find(p => p.id === savedId || p.name === savedId) ||
           projs.find(p => p.id === selectedProject || p.name === selectedProject);

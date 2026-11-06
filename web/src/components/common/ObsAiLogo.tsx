@@ -64,8 +64,6 @@ export const ObsAiLogo: React.FC<{ iconSize?: number; className?: string }> = ({
   );
 };
 
-// Backward-compatibility exports
+// Backward-compatibility export
 export const AiObsIcon = ObsAiIcon;
 export const AiObsLogo = ObsAiLogo;
-export const FeenionIcon = ObsAiIcon;
-export const FeenionLogo = ObsAiLogo;

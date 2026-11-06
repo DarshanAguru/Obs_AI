@@ -25,7 +25,7 @@ export const DEFAULT_MODEL_CATALOG: ModelPricingEntry[] = [
 export function getCustomPricing(): ModelPricingEntry[] {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const saved = localStorage.getItem('obs_ai_custom_pricing') || localStorage.getItem('ai_obs_custom_pricing') || localStorage.getItem('feenion_custom_pricing');
+      const saved = localStorage.getItem('obs_ai_custom_pricing') || localStorage.getItem('ai_obs_custom_pricing');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -42,7 +42,6 @@ export function saveCustomPricing(catalog: ModelPricingEntry[]): void {
     localStorage.setItem('obs_ai_custom_pricing', JSON.stringify(catalog));
     window.dispatchEvent(new Event('obs_ai_pricing_changed'));
     window.dispatchEvent(new Event('ai_obs_pricing_changed'));
-    window.dispatchEvent(new Event('feenion_pricing_changed'));
   }
 }
 
@@ -50,10 +49,8 @@ export function resetPricingToDefaults(): ModelPricingEntry[] {
   if (typeof window !== 'undefined' && window.localStorage) {
     localStorage.removeItem('obs_ai_custom_pricing');
     localStorage.removeItem('ai_obs_custom_pricing');
-    localStorage.removeItem('feenion_custom_pricing');
     window.dispatchEvent(new Event('obs_ai_pricing_changed'));
     window.dispatchEvent(new Event('ai_obs_pricing_changed'));
-    window.dispatchEvent(new Event('feenion_pricing_changed'));
   }
   return [...DEFAULT_MODEL_CATALOG];
 }

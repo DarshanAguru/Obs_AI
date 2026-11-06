@@ -7,7 +7,6 @@ from .langchain import (
     ObsAICallbackHandler,
     AiObsCallbackHandler,
     AIObsCallbackHandler,
-    FeenionCallbackHandler,
     instrument_langchain,
 )
 
@@ -26,6 +25,5 @@ __all__ = [
     "ObsAICallbackHandler",
     "AiObsCallbackHandler",
     "AIObsCallbackHandler",
-    "FeenionCallbackHandler",
     "instrument_langchain",
 ]

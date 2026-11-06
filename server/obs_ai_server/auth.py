@@ -12,7 +12,6 @@ from .db import APIKey, Project, get_db
 
 api_key_header_primary = APIKeyHeader(name="X-Obs-AI-Api-Key", auto_error=False)
 api_key_header_fallback = APIKeyHeader(name="X-AI-Obs-Api-Key", auto_error=False)
-api_key_header_legacy = APIKeyHeader(name="X-Feenion-Api-Key", auto_error=False)
 http_bearer = HTTPBearer(auto_error=False)
 
 def hash_api_key(key: str) -> str:
@@ -47,13 +46,12 @@ def get_current_project(
     db: Session = Depends(get_db),
     header_key: str | None = Security(api_key_header_primary),
     header_key_fallback: str | None = Security(api_key_header_fallback),
-    header_key_legacy: str | None = Security(api_key_header_legacy),
     bearer_credentials: HTTPAuthorizationCredentials | None = Security(http_bearer),
     x_workspace_id: Optional[str] = Header(default=None, alias="X-Workspace-Id"),
     x_project_id: Optional[str] = Header(default=None, alias="X-Project-Id"),
 ) -> Project:
     # 1. Check API Key Authentication (if provided)
-    key_str = header_key or header_key_fallback or header_key_legacy
+    key_str = header_key or header_key_fallback
     if not key_str and bearer_credentials:
         key_str = bearer_credentials.credentials
 

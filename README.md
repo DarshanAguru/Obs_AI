@@ -349,7 +349,7 @@ python examples/comprehensive_mock_ecosystem.py
 | `OBS_AI_LOG_LEVEL` | `INFO` | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `OBS_AI_RETENTION_DAYS` | `30` | Auto-retention period for trace telemetry |
 
-*(Note: Legacy `AI_OBS_*` and `FEENION_*` variables are accepted for backwards compatibility.)*
+*(Note: Legacy `AI_OBS_*` variables are accepted for backwards compatibility.)*
 
 ---
 

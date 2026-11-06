@@ -36,19 +36,19 @@ export const SUPPORTED_CURRENCIES: Record<string, CurrencyConfig> = {
 export function getActiveCurrency(): CurrencyConfig {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const saved = localStorage.getItem('obs_ai_currency') || localStorage.getItem('ai_obs_currency') || localStorage.getItem('feenion_currency');
+      const saved = localStorage.getItem('obs_ai_currency') || localStorage.getItem('ai_obs_currency');
       if (saved && SUPPORTED_CURRENCIES[saved]) {
         const cfg = { ...SUPPORTED_CURRENCIES[saved] };
         
         // 1. Check user custom manual override
-        const customRate = localStorage.getItem(`obs_ai_fx_${saved}`) || localStorage.getItem(`ai_obs_fx_${saved}`) || localStorage.getItem(`feenion_fx_${saved}`);
+        const customRate = localStorage.getItem(`obs_ai_fx_${saved}`) || localStorage.getItem(`ai_obs_fx_${saved}`);
         if (customRate && !isNaN(Number(customRate)) && Number(customRate) > 0) {
           cfg.rate = Number(customRate);
           return cfg;
         }
 
         // 2. Check cached live open-source FX rate
-        const liveRatesStr = localStorage.getItem('obs_ai_live_fx_rates') || localStorage.getItem('ai_obs_live_fx_rates') || localStorage.getItem('feenion_live_fx_rates');
+        const liveRatesStr = localStorage.getItem('obs_ai_live_fx_rates') || localStorage.getItem('ai_obs_live_fx_rates');
         if (liveRatesStr) {
           const liveRates = JSON.parse(liveRatesStr);
           if (liveRates && liveRates[saved] && typeof liveRates[saved] === 'number') {
@@ -72,7 +72,6 @@ export function setActiveCurrency(code: string, customRate?: number): void {
     }
     window.dispatchEvent(new Event('obs_ai_currency_changed'));
     window.dispatchEvent(new Event('ai_obs_currency_changed'));
-    window.dispatchEvent(new Event('feenion_currency_changed'));
   }
 }
 
@@ -166,7 +165,6 @@ export async function fetchLiveExchangeRates(): Promise<{
           }
           window.dispatchEvent(new Event('obs_ai_currency_changed'));
           window.dispatchEvent(new Event('ai_obs_currency_changed'));
-          window.dispatchEvent(new Event('feenion_currency_changed'));
           return { success: true, source: src.name, rates: extracted, lastUpdated: timestamp };
         }
       }

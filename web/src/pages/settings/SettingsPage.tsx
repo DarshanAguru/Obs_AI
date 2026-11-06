@@ -60,7 +60,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   // Workspace API Keys & Snippets State
   const [revealedKeys, setRevealedKeys] = useState<Record<string, string>>(() => {
     try {
-      const cached = localStorage.getItem('obs_ai_cached_api_keys') || localStorage.getItem('ai_obs_cached_api_keys') || localStorage.getItem('feenion_cached_api_keys');
+      const cached = localStorage.getItem('obs_ai_cached_api_keys') || localStorage.getItem('ai_obs_cached_api_keys');
       return cached ? JSON.parse(cached) : {};
     } catch {
       return {};
@@ -78,10 +78,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const [savedCurrencyMsg, setSavedCurrencyMsg] = useState(false);
   const [isFetchingFx, setIsFetchingFx] = useState(false);
   const [fxSource, setFxSource] = useState<string>(
-    (typeof window !== 'undefined' && (localStorage.getItem('obs_ai_live_fx_source') || localStorage.getItem('ai_obs_live_fx_source') || localStorage.getItem('feenion_live_fx_source'))) || 'Built-in Catalog'
+    (typeof window !== 'undefined' && (localStorage.getItem('obs_ai_live_fx_source') || localStorage.getItem('ai_obs_live_fx_source'))) || 'Built-in Catalog'
   );
   const [fxLastUpdated, setFxLastUpdated] = useState<string>(
-    (typeof window !== 'undefined' && (localStorage.getItem('obs_ai_live_fx_last_updated') || localStorage.getItem('ai_obs_live_fx_last_updated') || localStorage.getItem('feenion_live_fx_last_updated'))) || 'Default'
+    (typeof window !== 'undefined' && (localStorage.getItem('obs_ai_live_fx_last_updated') || localStorage.getItem('ai_obs_live_fx_last_updated'))) || 'Default'
   );
 
   // Model Pricing Catalog State
@@ -137,16 +137,14 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     const handleCurrencyUpdate = () => {
       setCurrency(getActiveCurrency());
       setCustomFxRate(String(getActiveCurrency().rate));
-      setFxSource(localStorage.getItem('obs_ai_live_fx_source') || localStorage.getItem('ai_obs_live_fx_source') || localStorage.getItem('feenion_live_fx_source') || 'Built-in Catalog');
-      setFxLastUpdated(localStorage.getItem('obs_ai_live_fx_last_updated') || localStorage.getItem('ai_obs_live_fx_last_updated') || localStorage.getItem('feenion_live_fx_last_updated') || 'Default');
+      setFxSource(localStorage.getItem('obs_ai_live_fx_source') || localStorage.getItem('ai_obs_live_fx_source') || 'Built-in Catalog');
+      setFxLastUpdated(localStorage.getItem('obs_ai_live_fx_last_updated') || localStorage.getItem('ai_obs_live_fx_last_updated') || 'Default');
     };
     window.addEventListener('obs_ai_currency_changed', handleCurrencyUpdate);
     window.addEventListener('ai_obs_currency_changed', handleCurrencyUpdate);
-    window.addEventListener('feenion_currency_changed', handleCurrencyUpdate);
     return () => {
       window.removeEventListener('obs_ai_currency_changed', handleCurrencyUpdate);
       window.removeEventListener('ai_obs_currency_changed', handleCurrencyUpdate);
-      window.removeEventListener('feenion_currency_changed', handleCurrencyUpdate);
     };
   }, []);
 

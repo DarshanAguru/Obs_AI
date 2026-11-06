@@ -8,7 +8,7 @@ def test_health_and_readiness():
         res_health = client.get("/health")
         assert res_health.status_code == 200
         assert res_health.json()["status"] == "ok"
-        assert res_health.json()["version"] == "0.1.0"
+        assert res_health.json()["version"] == "0.1.1"
 
         res_ready = client.get("/ready")
         assert res_ready.status_code == 200
@@ -41,8 +41,8 @@ def test_ingestion_and_query_pipeline():
                             "duration_ms": 1300.0,
                             "status": "ok",
                             "attributes": {"model": "gpt-4o"},
-                            "input": {"prompt": "What is Feenion?"},
-                            "output": {"text": "Feenion is an AI debugger."},
+                            "input": {"prompt": "What is Obs_AI?"},
+                            "output": {"text": "Obs_AI is an AI debugger."},
                             "metrics": {"tokens": {"prompt": 15, "completion": 25, "total": 40}, "cost": 0.002},
                             "events": [],
                         }

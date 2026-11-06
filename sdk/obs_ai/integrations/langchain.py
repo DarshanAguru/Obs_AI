@@ -9,7 +9,7 @@ from ..models import Span, utc_now
 from ..pricing import pricing_registry
 
 def _get_active_tracer():
-    for mod_name in ("obs_ai", "Obs_AI", "ai_obs", "AI_obs", "feenion"):
+    for mod_name in ("obs_ai", "Obs_AI", "ai_obs", "AI_obs"):
         try:
             mod = __import__(mod_name)
             if hasattr(mod, "tracer"):
@@ -322,7 +322,6 @@ class ObsAiCallbackHandler(BaseCallbackHandler):
 ObsAICallbackHandler = ObsAiCallbackHandler
 AiObsCallbackHandler = ObsAiCallbackHandler
 AIObsCallbackHandler = ObsAiCallbackHandler
-FeenionCallbackHandler = ObsAiCallbackHandler
 
 def instrument_langchain(trace_name: str = "langchain_execution") -> ObsAiCallbackHandler:
     """
