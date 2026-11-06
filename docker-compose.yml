@@ -1,0 +1,23 @@
+services:
+  obs-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: obs-ai-server
+    ports:
+      - "8000:8000"
+    environment:
+      - OBS_AI_DATABASE_URL=sqlite:////app/data/obs_ai.db
+      - OBS_AI_LOG_LEVEL=INFO
+      - OBS_AI_RETENTION_DAYS=30
+    volumes:
+      - obs_ai_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  obs_ai_data:

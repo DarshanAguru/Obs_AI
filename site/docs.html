@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documentation — Obs_AI AI Debugger</title>
+  <meta name="description" content="Official beginner-to-pro documentation for Obs_AI: SDK instrumentation, distributed tracing, AI observability, and self-hosted deployment." />
+  <meta property="og:title" content="Documentation — Obs_AI AI Debugger" />
+  <meta property="og:description" content="Complete guide to instrumenting, debugging, and self-hosting AI applications with Obs_AI." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://feenion.fun/docs" />
+  <meta property="og:image" content="assets/og-image.svg" />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/icon.svg" />
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts Preconnect & Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #080b11;
+      background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: #e2e8f0;
+    }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card { position: relative; overflow: hidden; background: rgba(15, 23, 42, 0.35); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 12px 32px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(255,255,255,0.035); }
+    .glass-card::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: var(--drop-opacity, 0); background: radial-gradient(290px circle at var(--drop-x, -200px) var(--drop-y, -200px), rgba(167,139,250,0.20), rgba(129,140,248,0.105) 24%, rgba(56,189,248,0.04) 46%, transparent 70%); transition: opacity 160ms ease; }
+    .glass-card > * { position: relative; }
+
+    pre, code { max-width: 100%; }
+    pre { overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: pre; }
+    .glass-inner { background: rgba(7, 11, 19, 0.55); backdrop-filter: blur(16px) saturate(1.1); -webkit-backdrop-filter: blur(16px) saturate(1.1); border: 1px solid rgba(255,255,255,0.09); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07); }
+    body { isolation: isolate; }
+    body > :not(#dotCanvas) { position: relative; z-index: 1; }
+    body > header { isolation: isolate; z-index: 100 !important; }
+    #mobileMenuBackdrop { z-index: 100 !important; }
+    #mobileMenu { z-index: 101 !important; }
+    .doc-link.active {
+      color: #818cf8 !important;
+      font-weight: 600 !important;
+      border-left-color: #6366f1 !important;
+    }
+    /* Hide scrollbar completely across Chrome, Safari, Firefox, Edge */
+    #docsSidebar, .no-scrollbar {
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+    #docsSidebar::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-[#080b11] text-[#e2e8f0]">
+
+  <!-- Ultra-Modern Glassmorphic Navbar (h-14) -->
+  <header class="h-14 bg-[#080b11]/90 backdrop-blur-xl border-b border-white/[0.08] sticky top-0 z-50 px-4 sm:px-6 transition-all relative">
+    <div class="max-w-7xl mx-auto h-full flex items-center justify-between">
+
+      <!-- Left: Logo & Desktop Navigation -->
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="flex items-center space-x-2.5 group">
+          <div class="p-1 rounded-lg bg-[#0d111a] border border-white/10 group-hover:border-indigo-500/50 transition-colors shadow-sm">
+            <svg class="w-5 h-5 shrink-0 rounded group-hover:scale-105 transition-transform" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="32" height="32" rx="6" fill="#090D16" />
+              <rect x="0.5" y="0.5" width="31" height="31" rx="5.5" stroke="#1E2330" />
+              <path d="M 5 16 C 9 9, 23 9, 27 16 C 23 23, 9 23, 5 16 Z" stroke="url(#nav-grad)" stroke-width="1.8" stroke-linejoin="round" />
+              <circle cx="16" cy="16" r="5" stroke="#818CF8" stroke-width="1" stroke-dasharray="2 1.5" />
+              <circle cx="16" cy="16" r="2.5" fill="url(#nav-grad)" />
+              <circle cx="16" cy="16" r="1" fill="#FFFFFF" />
+              <circle cx="5" cy="16" r="1.5" fill="#6366F1" />
+              <circle cx="27" cy="16" r="1.5" fill="#38BDF8" />
+              <circle cx="16" cy="7" r="1.4" fill="#38BDF8" />
+              <circle cx="16" cy="25" r="1.4" fill="#8B5CF6" />
+              <defs>
+                <linearGradient id="nav-grad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#38BDF8" />
+                  <stop offset="0.5" stop-color="#6366F1" />
+                  <stop offset="1" stop-color="#8B5CF6" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span class="text-sm font-bold font-mono text-white tracking-tight">Obs_AI</span>
+          <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">v0.0.1</span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-1 text-xs font-mono">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all">Overview</a>
+          <a href="docs.html" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.15)] transition-all">Docs</a>
+          <a href="architecture.html" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all">Architecture</a>
+          <a href="examples.html" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all">Examples</a>
+          <a href="about.html" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all">About</a>
+          <a href="community.html" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all">Community</a>
+        </nav>
+      </div>
+
+      <!-- Right: Action Buttons & Hamburger -->
+      <div class="flex items-center space-x-2.5 text-xs">
+        <a href="https://github.com/DarshanAguru/Obs_AI.git" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0d111a] hover:bg-slate-800 text-slate-200 border border-white/10 hover:border-slate-600 transition-all font-mono text-[11px]">
+          <svg class="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>Star</span>
+          <span class="text-slate-500">&bull;</span>
+          <span class="text-slate-400 font-bold">GitHub</span>
+        </a>
+
+        <a href="docs.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-semibold font-mono text-xs shadow-md shadow-indigo-500/20 transition-all">
+          <span>Get Started</span>
+          <span>&rarr;</span>
+        </a>
+
+        <!-- Mobile Hamburger Toggle Button -->
+        <button id="mobileMenuBtn" aria-label="Toggle Navigation" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent hover:border-slate-700 transition-all focus:outline-none">
+          <svg id="hamburgerOpenIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="hamburgerCloseIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/75 z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- Mobile Dropdown Navigation Menu (Solid & Compact) -->
+    <div id="mobileMenu" class="hidden md:hidden border-b border-[#1e2330] bg-[#090d16] px-4 py-3 shadow-2xl relative z-50 text-xs font-mono">
+      <div class="grid grid-cols-2 gap-2 pb-2.5 border-b border-[#1e2330]">
+        <a href="index.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-colors">
+          <span>⚡</span>
+          <span>Overview</span>
+        </a>
+        <a href="docs.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/40 text-indigo-300 font-bold transition-colors">
+          <span>📖</span>
+          <span>Docs</span>
+        </a>
+        <a href="architecture.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-colors">
+          <span>🏗️</span>
+          <span>Architecture</span>
+        </a>
+        <a href="examples.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-colors">
+          <span>🧪</span>
+          <span>Examples</span>
+        </a>
+        <a href="about.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-colors">
+          <span>👤</span>
+          <span>About</span>
+        </a>
+        <a href="community.html" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-colors">
+          <span>💬</span>
+          <span>Community</span>
+        </a>
+      </div>
+
+      <div class="pt-2.5 flex items-center gap-2">
+        <a href="https://github.com/DarshanAguru/Obs_AI.git" target="_blank" rel="noopener" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#0d111a] hover:bg-slate-800 text-slate-200 border border-slate-700 text-[11px] font-semibold transition-all">
+          <svg class="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>GitHub ★</span>
+        </a>
+        <a href="docs.html" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-[11px] transition-all">
+          <span>Get Started &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3-Column Documentation Layout -->
+  <div class="flex-1 max-w-7xl mx-auto w-full flex flex-col md:flex-row px-4 sm:px-6 py-6 md:py-8 gap-6 md:gap-8 relative z-10">
+
+    <!-- Mobile Table of Contents Toggle Pill -->
+    <div class="md:hidden flex items-center justify-between p-3 rounded-xl glass-card">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-mono font-bold text-slate-200">📖 Navigation Menu</span>
+      </div>
+      <button id="mobileTocBtn" class="px-3 py-1 rounded-lg bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 text-xs font-mono font-semibold flex items-center gap-1.5 hover:bg-indigo-600/30 transition-colors">
+        <span>Chapters</span>
+        <svg id="mobileTocIcon" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      </button>
+    </div>
+
+    <!-- Left Interactive Sticky Navigation Sidebar (Hidden on mobile unless toggled) -->
+    <aside id="docsSidebar" class="hidden md:block w-full md:w-64 shrink-0 select-none md:sticky md:top-20 md:h-[calc(100vh-6rem)] overflow-y-auto no-scrollbar space-y-6 text-xs p-4 rounded-xl glass-card shadow-xl">
+
+      <!-- Search Input Filter -->
+      <div class="relative mb-4">
+        <input
+          id="docSearch"
+          type="text"
+          placeholder="Filter documentation..."
+          oninput="filterDocs(this.value)"
+          class="w-full pl-7 pr-3 py-1.5 rounded-lg bg-[#0d111a] border border-[#1e2330] focus:border-indigo-500 focus:outline-none text-xs text-slate-200 placeholder-slate-500 font-sans"
+        />
+        <span class="absolute left-2.5 top-2 text-slate-500 text-xs">🔍</span>
+      </div>
+
+      <div id="sidebarMenu" class="space-y-5">
+        <!-- Section 1 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            1. Getting Started
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#what-is-obs-ai" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">What is Obs_AI?</a>
+            <a href="#quickstart" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Docker Quickstart</a>
+            <a href="#pip-install" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Python SDK Setup</a>
+            <a href="#first-trace" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Your First 5-Min Trace</a>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            2. Core Architecture
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#data-model" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Traces, Spans & Events</a>
+            <a href="#context-propagation" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Context Propagation</a>
+            <a href="#async-exporter" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Async Batch Exporter</a>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            3. Python SDK Deep-Dive
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#sdk-trace-decorator" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">@trace & @async_trace</a>
+            <a href="#sdk-span-context" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">span() Context Manager</a>
+            <a href="#sdk-tokens-cost" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Token & Cost Tracking</a>
+            <a href="#sdk-redaction" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">PII & Secret Redaction</a>
+          </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            4. AI Frameworks
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#instrument-openai" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">OpenAI Auto-Wrap</a>
+            <a href="#instrument-gemini" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Google Gemini</a>
+            <a href="#instrument-anthropic" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Anthropic Claude</a>
+            <a href="#instrument-langchain" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">LangChain Callbacks</a>
+            <a href="#instrument-rag" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">RAG & Vector Retrieval</a>
+            <a href="#instrument-agents" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Multi-Tool Agents</a>
+          </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            5. Debugging Workflows
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#debug-waterfall" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Waterfall & Critical Path</a>
+            <a href="#debug-dag" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">D3 DAG Mind Map</a>
+            <a href="#debug-errors" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Error Fingerprinting</a>
+            <a href="#debug-compare" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Trace Regression Diff</a>
+          </div>
+        </div>
+
+        <!-- Section 6 -->
+        <div class="doc-group">
+          <span class="text-[11px] uppercase font-mono font-bold text-slate-400 tracking-wider block mb-1.5">
+            6. Self-Hosting & Ops
+          </span>
+          <div class="space-y-0.5 border-l-2 border-slate-800">
+            <a href="#deploy-docker" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Production Docker</a>
+            <a href="#deploy-env" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Environment Variables</a>
+            <a href="#workspaces" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Workspaces &amp; Isolation</a>
+            <a href="#api-reference" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">REST &amp; WebSocket API</a>
+            <a href="#faq" class="doc-link block pl-3 py-1 text-slate-400 hover:text-white border-l-2 border-transparent -ml-[2px] transition-colors">Troubleshooting &amp; FAQ</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 space-y-10 text-sm leading-relaxed p-6 sm:p-10 rounded-2xl glass-card shadow-2xl">
+
+      <!-- Section 1: Getting Started -->
+      <section id="what-is-obs-ai" class="space-y-4 pt-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 1 &bull; Getting Started
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold font-mono text-white tracking-tight">
+          What is Obs_AI?
+        </h1>
+        <p class="text-slate-300">
+          <strong>Obs_AI</strong> is an open-source, 100% self-hosted observability and debugging platform built specifically for LLM applications, RAG pipelines, and autonomous multi-agent tool loops.
+        </p>
+        <p class="text-slate-400">
+          Traditional APMs only capture raw HTTP status codes or generic server errors. When an agent loops infinitely, retrieves irrelevant vector chunks, or hallucinates due to prompt bloat, traditional tools remain blind. Obs_AI captures the <strong>full causal execution graph</strong>: exact prompts, completions, tokens, calculated costs, tool arguments, and retrieval scores.
+        </p>
+      </section>
+
+      <!-- Section: Docker Quickstart -->
+      <section id="quickstart" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Docker Quickstart</h2>
+        <p class="text-slate-300">
+          Spin up the complete Obs_AI server and React dashboard with embedded SQLite WAL storage in one command:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-indigo-300 overflow-x-auto whitespace-pre glass-inner"><code>git clone https://github.com/DarshanAguru/Obs_AI.git
+cd obs_ai
+docker compose up -d</code></pre>
+        <p class="text-slate-400 text-xs">
+          Open <a href="http://localhost:8000" target="_blank" class="text-indigo-400 underline">http://localhost:8000</a> in your browser to view the live dashboard.
+        </p>
+      </section>
+
+      <!-- Section: Python SDK Setup -->
+      <section id="pip-install" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Python SDK Setup</h2>
+        <p class="text-slate-300">
+          Install the official lightweight Python SDK in your application environment:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-indigo-300 overflow-x-auto whitespace-pre glass-inner"><code>pip install obs-ai</code></pre>
+      </section>
+
+      <!-- Section: First Trace -->
+      <section id="first-trace" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Your First 5-Minute Trace</h2>
+        <p class="text-slate-300">
+          Configure the client and annotate your functions with <code class="text-indigo-300 bg-[#0d111a] px-1.5 py-0.5 rounded border border-[#1e2330]">@trace</code> and <code class="text-indigo-300 bg-[#0d111a] px-1.5 py-0.5 rounded border border-[#1e2330]">span()</code>:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> trace, span, configure
+
+<span class="text-slate-500"># Point SDK to your local or self-hosted server</span>
+configure(server_url=<span class="text-emerald-300">"http://localhost:8000"</span>)
+
+<span class="text-indigo-400">@trace</span>(name=<span class="text-emerald-300">"customer_support_agent"</span>, span_type=<span class="text-emerald-300">"agent"</span>)
+<span class="text-purple-400">def</span> <span class="text-blue-400">handle_query</span>(user_query: <span class="text-amber-300">str</span>):
+    <span class="text-purple-400">with</span> span(<span class="text-emerald-300">"vector_kb_search"</span>, span_type=<span class="text-emerald-300">"retrieval"</span>, input={<span class="text-emerald-300">"q"</span>: user_query}):
+        docs = [<span class="text-emerald-300">"Reset password at /settings"</span>, <span class="text-emerald-300">"API keys are under Security"</span>]
+
+    <span class="text-purple-400">with</span> span(<span class="text-emerald-300">"llm_synthesis"</span>, span_type=<span class="text-emerald-300">"llm"</span>):
+        <span class="text-purple-400">return</span> f<span class="text-emerald-300">"Answer for {user_query}: {docs[0]}"</span>
+
+handle_query(<span class="text-emerald-300">"How do I reset my password?"</span>)</code></pre>
+      </section>
+
+      <!-- Section: Core Architecture -->
+      <section id="data-model" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 2 &bull; Core Architecture
+        </div>
+        <h2 class="text-xl font-bold font-mono text-white">Traces, Spans & Events Data Model</h2>
+        <p class="text-slate-300">
+          Obs_AI models execution as a hierarchical Directed Acyclic Graph (DAG):
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-slate-300 pl-2">
+          <li><strong>Trace</strong>: The top-level root operation representing the end-to-end request (e.g. an API endpoint or agent task).</li>
+          <li><strong>Span</strong>: A timed unit of work within a trace (e.g., LLM generation, vector search, tool execution, function call).</li>
+          <li><strong>Event</strong>: An instantaneous timestamped milestone attached to a span (e.g. streaming first token received).</li>
+        </ul>
+      </section>
+
+      <!-- Section: Context Propagation -->
+      <section id="context-propagation" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Context Propagation</h2>
+        <p class="text-slate-300">
+          Obs_AI uses Python's native <code class="text-indigo-300 bg-[#0d111a] px-1.5 py-0.5 rounded border border-[#1e2330]">contextvars.ContextVar</code> to maintain the current active trace and parent span IDs across nested sync and async calls without requiring manual ID passing.
+        </p>
+      </section>
+
+      <!-- Section: Pluggable Exporters -->
+      <section id="async-exporter" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Pluggable Telemetry Exporters</h2>
+        <p class="text-slate-300">
+          Obs_AI provides 5 built-in, decoupled exporters for any production or testing setup:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-slate-300 pl-2 text-sm">
+          <li><strong>AsyncExporter(inner)</strong>: Non-blocking daemon worker with an in-memory queue flushing batches every 500ms without slowing down request loops.</li>
+          <li><strong>HTTPExporter(endpoint, api_key, project_id)</strong>: Direct HTTP ingestion transport to the Obs_AI server with tenant API key authentication.</li>
+          <li><strong>JSONLExporter(filepath)</strong>: Structured append-only local file logging for air-gapped environments, CI pipelines, and offline trace replay.</li>
+          <li><strong>ConsoleExporter(verbose)</strong>: Real-time formatted terminal output for local developer interactive debugging.</li>
+          <li><strong>CompositeExporter([exporters])</strong>: Broadcasts telemetry to multiple targets simultaneously (e.g. streaming to remote HTTP while saving local JSONL audit files).</li>
+        </ul>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> configure
+<span class="text-purple-400">from</span> obs_ai.exporters <span class="text-purple-400">import</span> AsyncExporter, HTTPExporter, CompositeExporter, JSONLExporter
+
+<span class="text-slate-500"># Composite: Async HTTP upload + local JSONL audit trail</span>
+configure(
+    exporter=CompositeExporter([
+        AsyncExporter(HTTPExporter(<span class="text-emerald-300">"http://localhost:8000"</span>, api_key=<span class="text-emerald-300">"obs_ai_key"</span>, project_id=<span class="text-emerald-300">"finance-prod"</span>)),
+        JSONLExporter(<span class="text-emerald-300">"traces_audit.jsonl"</span>),
+    ])
+)</code></pre>
+      </section>
+
+      <!-- Section: Multi-Tenant Workspace Routing -->
+      <section id="sdk-workspace-routing" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Multi-Tenant Workspace Routing & Authentication</h2>
+        <p class="text-slate-300">
+          Telemetry in Obs_AI is routed strictly using each workspace's unique <code class="text-indigo-300 font-mono">Workspace ID</code> (obtained from the Settings page):
+        </p>
+        <div class="p-3.5 rounded-xl glass-inner space-y-1 text-xs font-mono">
+          <span class="text-amber-300 font-bold">🔐 Authentication & Local Hosting</span>
+          <p class="text-slate-400 font-sans text-xs leading-relaxed">
+            API key is optional for local development on the same PC. When deploying Obs_AI in production with authentication enabled, provide your workspace's API key.
+          </p>
+        </div>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">import</span> obs_ai
+<span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> trace
+
+<span class="text-slate-500"># Option 1: Global Workspace Configuration by Workspace ID</span>
+obs_ai.configure(
+    server_url=<span class="text-emerald-300">"http://localhost:8000"</span>,
+    workspace_id=<span class="text-emerald-300">"60d03b94-82a1-4328-874e-7b5fbfbc4402"</span>,
+    api_key=<span class="text-emerald-300">"fn_live_..."</span>,  <span class="text-slate-500"># Optional for local instance, required for auth</span>
+)
+
+<span class="text-slate-500"># Option 2: Dynamic Per-Agent / Per-Trace Workspace Routing (with Auth)</span>
+<span class="text-indigo-400">@trace</span>(
+    name=<span class="text-emerald-300">"compliance_scanner"</span>,
+    workspace_id=<span class="text-emerald-300">"60d03b94-82a1-4328-874e-7b5fbfbc4402"</span>,
+    api_key=<span class="text-emerald-300">"fn_live_..."</span>,
+)
+<span class="text-purple-400">def</span> <span class="text-blue-400">run_compliance</span>():
+    <span class="text-slate-500"># Or attach dynamically inside any function:</span>
+    obs_ai.set_workspace_id(<span class="text-emerald-300">"60d03b94-82a1-4328-874e-7b5fbfbc4402"</span>)
+    obs_ai.set_api_key(<span class="text-emerald-300">"fn_live_..."</span>)
+    <span class="text-purple-400">return</span> <span class="text-emerald-300">"completed"</span></code></pre>
+      </section>
+
+      <!-- Section: Python SDK Deep-Dive -->
+      <section id="sdk-trace-decorator" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 3 &bull; Python SDK Deep-Dive
+        </div>
+        <h2 class="text-xl font-bold font-mono text-white">@trace & @async_trace Decorators</h2>
+        <p class="text-slate-300">
+          Decorate any synchronous or asynchronous Python function to automatically track execution:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> async_trace
+
+<span class="text-indigo-400">@async_trace</span>(name=<span class="text-emerald-300">"async_pipeline"</span>, span_type=<span class="text-emerald-300">"agent"</span>)
+<span class="text-purple-400">async def</span> <span class="text-blue-400">process_stream</span>(payload: <span class="text-amber-300">dict</span>):
+    <span class="text-purple-400">await</span> asyncio.sleep(<span class="text-amber-300">0.05</span>)
+    <span class="text-purple-400">return</span> {<span class="text-emerald-300">"status"</span>: <span class="text-emerald-300">"success"</span>}</code></pre>
+      </section>
+
+      <!-- Section: span Context Manager -->
+      <section id="sdk-span-context" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">span() Context Manager</h2>
+        <p class="text-slate-300">
+          Use the <code class="text-indigo-300 bg-[#0d111a] px-1.5 py-0.5 rounded border border-[#1e2330]">span()</code> context manager for sub-operations:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">with</span> span(<span class="text-emerald-300">"db_lookup"</span>, span_type=<span class="text-emerald-300">"tool"</span>, input={<span class="text-emerald-300">"user_id"</span>: <span class="text-amber-300">42</span>}) <span class="text-purple-400">as</span> s:
+    result = db.query(...)
+    s.set_output(result)
+    s.set_metric(<span class="text-emerald-300">"rows_returned"</span>, len(result))</code></pre>
+      </section>
+
+      <!-- Section: Token & Cost Tracking -->
+      <section id="sdk-tokens-cost" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Token &amp; Cost Tracking &bull; Multi-Currency Support</h2>
+        <p class="text-slate-300">
+          Obs_AI contains built-in pricing tables for standard models (e.g. GPT-4o, Claude 3.5 Sonnet, Gemini 2.0 Flash, DeepSeek). You can also set custom token usage and model overrides in code or via the Web Dashboard:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code>s.set_tokens(prompt_tokens=<span class="text-amber-300">512</span>, completion_tokens=<span class="text-amber-300">128</span>)
+s.set_attribute(<span class="text-emerald-300">"model"</span>, <span class="text-emerald-300">"gpt-4o"</span>)
+
+<span class="text-slate-500"># Override pricing directly in code (per 1M tokens):</span>
+<span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> set_model_pricing
+set_model_pricing(<span class="text-emerald-300">"my-fine-tuned-model"</span>, prompt_per_1m=<span class="text-amber-300">1.20</span>, completion_per_1m=<span class="text-amber-300">3.80</span>)</code></pre>
+        <div class="p-3.5 rounded-xl glass-inner space-y-1.5 text-xs font-mono">
+          <span class="text-amber-300 font-bold">💱 Dashboard Currency &amp; Pricing Editor</span>
+          <p class="text-slate-400 font-sans text-xs leading-relaxed">
+            In the Web Dashboard under <strong>Settings &rarr; Currency &amp; FX Display Preferences</strong>, you can switch between <strong>USD ($)</strong>, <strong>INR (₹)</strong>, <strong>EUR (€)</strong>, <strong>GBP (£)</strong>, <strong>CNY (¥)</strong>, and <strong>JPY (¥)</strong> with customizable exchange rates, and edit token rates for any model with a live simulation calculator.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section: PII Redaction -->
+      <section id="sdk-redaction" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Client-Side Sensitive PII & Secret Redaction</h2>
+        <p class="text-slate-300">
+          Mask sensitive fields in payload dicts before they leave application memory:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">from</span> obs_ai.redaction <span class="text-purple-400">import</span> Redactor
+
+redactor = Redactor(sensitive_keys={<span class="text-emerald-300">"api_key"</span>, <span class="text-emerald-300">"password"</span>, <span class="text-emerald-300">"auth_token"</span>, <span class="text-emerald-300">"ssn"</span>})
+safe_payload = redactor.redact(raw_payload)</code></pre>
+      </section>
+
+      <!-- Section: AI Frameworks -->
+      <section id="instrument-azure-openai" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 4 &bull; Framework Auto-Instrumentation
+        </div>
+        <h2 class="text-xl font-bold font-mono text-white">Azure OpenAI & Azure AI Foundry</h2>
+        <p class="text-slate-300">
+          Wrap Azure OpenAI (<code class="text-indigo-300">openai.AzureOpenAI</code> or LangChain <code class="text-indigo-300">langchain_openai.AzureChatOpenAI</code>) in one call:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">from</span> langchain_openai <span class="text-purple-400">import</span> AzureChatOpenAI
+<span class="text-purple-400">from</span> obs_ai.integrations <span class="text-purple-400">import</span> wrap_azure_openai
+
+<span class="text-slate-500"># Auto-instruments .invoke(), .ainvoke(), tokens, and pricing</span>
+llm = wrap_azure_openai(AzureChatOpenAI(
+    azure_endpoint=<span class="text-emerald-300">"https://my-resource.openai.azure.com/"</span>,
+    api_key=<span class="text-emerald-300">"AZURE_API_KEY"</span>,
+    azure_deployment=<span class="text-emerald-300">"gpt-4o"</span>,
+    api_version=<span class="text-emerald-300">"2024-02-01"</span>,
+))
+
+response = llm.invoke([(<span class="text-emerald-300">"user"</span>, <span class="text-emerald-300">"Analyze compliance report #1024"</span>)])</code></pre>
+      </section>
+
+      <!-- Section: OpenAI -->
+      <section id="instrument-openai" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">OpenAI Auto-Instrumentation</h2>
+        <p class="text-slate-300">
+          Wrap the official <code class="text-indigo-300 bg-[#0d111a] px-1.5 py-0.5 rounded border border-[#1e2330]">OpenAI</code> client or LangChain <code class="text-indigo-300">ChatOpenAI</code>:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">from</span> openai <span class="text-purple-400">import</span> OpenAI
+<span class="text-purple-400">from</span> obs_ai.integrations.openai <span class="text-purple-400">import</span> wrap_openai
+
+client = wrap_openai(OpenAI())</code></pre>
+      </section>
+
+      <!-- Section: Google Gemini -->
+      <section id="instrument-gemini" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Google Gemini Auto-Instrumentation</h2>
+        <p class="text-slate-300">
+          Wrap Google Gemini clients (<code class="text-indigo-300">google-genai</code> or <code class="text-indigo-300">google-generativeai</code>) in one line:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">from</span> google <span class="text-purple-400">import</span> genai
+<span class="text-purple-400">from</span> obs_ai.integrations.gemini <span class="text-purple-400">import</span> instrument_gemini
+
+client = genai.Client()
+instrument_gemini(client)
+
+response = client.models.generate_content(
+    model=<span class="text-emerald-300">"gemini-2.0-flash"</span>,
+    contents=<span class="text-emerald-300">"Explain vector embeddings in machine learning."</span>
+)</code></pre>
+      </section>
+
+      <!-- Section: Anthropic Claude -->
+      <section id="instrument-anthropic" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Anthropic Claude Auto-Instrumentation</h2>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">from</span> anthropic <span class="text-purple-400">import</span> Anthropic
+<span class="text-purple-400">from</span> obs_ai.integrations.anthropic <span class="text-purple-400">import</span> instrument_anthropic
+
+client = Anthropic()
+instrument_anthropic(client)</code></pre>
+      </section>
+
+      <!-- Section: LangChain Callbacks -->
+      <section id="instrument-langchain" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">LangChain & LangGraph Callbacks</h2>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">from</span> obs_ai.integrations.langchain <span class="text-purple-400">import</span> AiObsCallbackHandler
+
+handler = AiObsCallbackHandler(trace_name=<span class="text-emerald-300">"rag_chain"</span>)
+chain.invoke({<span class="text-emerald-300">"topic"</span>: <span class="text-emerald-300">"AI Debugging"</span>}, config={<span class="text-emerald-300">"callbacks"</span>: [handler]})</code></pre>
+      </section>
+
+      <!-- Section: RAG & Vector Retrieval -->
+      <section id="instrument-rag" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">RAG & Vector Retrieval Observability</h2>
+        <p class="text-slate-300">
+          Instrument retrieval spans to capture similarity scores, chunk IDs, and query text:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">with</span> span(<span class="text-emerald-300">"chroma_kb_query"</span>, span_type=<span class="text-emerald-300">"retrieval"</span>, input={<span class="text-emerald-300">"query"</span>: q, <span class="text-emerald-300">"top_k"</span>: <span class="text-amber-300">5</span>}) <span class="text-purple-400">as</span> s:
+    chunks = vector_store.similarity_search_with_score(q, k=<span class="text-amber-300">5</span>)
+    s.set_output([{<span class="text-emerald-300">"text"</span>: doc.page_content, <span class="text-emerald-300">"score"</span>: score} <span class="text-purple-400">for</span> doc, score <span class="text-purple-400">in</span> chunks])</code></pre>
+      </section>
+
+      <!-- Section: Multi-Tool Agents -->
+      <section id="instrument-agents" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Autonomous Agents & Tool Calling</h2>
+        <p class="text-slate-300">
+          Track multi-turn reasoning loops, tool call arguments, execution outputs, and error recovery:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre glass-inner"><code><span class="text-purple-400">with</span> span(<span class="text-emerald-300">"sql_executor"</span>, span_type=<span class="text-emerald-300">"tool"</span>, input={<span class="text-emerald-300">"sql"</span>: query_str}) <span class="text-purple-400">as</span> s:
+    s.set_attribute(<span class="text-emerald-300">"tool_name"</span>, <span class="text-emerald-300">"database_reader"</span>)
+    res = db.execute(query_str)
+    s.set_output(res)</code></pre>
+      </section>
+
+      <!-- Section: Observability Workflows -->
+      <section id="debug-waterfall" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 5 &bull; Debugging Workflows
+        </div>
+        <h2 class="text-xl font-bold font-mono text-white">Waterfall Timeline & Critical Path</h2>
+        <p class="text-slate-300">
+          The Waterfall Timeline view provides an interactive flamegraph of all child spans. Obs_AI automatically highlights the <strong>critical path</strong> that contributed most to the overall request duration, allowing you to instantly spot latency bottlenecks.
+        </p>
+      </section>
+
+      <!-- Section: D3 DAG Mind Map -->
+      <section id="debug-dag" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">D3 Execution DAG Mind Map</h2>
+        <p class="text-slate-300">
+          The Mind Map view renders the full parent-child causality tree of your AI execution. Link distances scale proportionally to latency, and color-coded nodes represent LLMs (purple), retrievals (amber), tools (cyan), and exceptions (rose).
+        </p>
+      </section>
+
+      <!-- Section: Error Fingerprinting -->
+      <section id="debug-errors" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Semantic Error Intelligence</h2>
+        <p class="text-slate-300">
+          Obs_AI clusters similar exceptions using semantic error fingerprinting. Click any fingerprint to see the full stack trace, occurrence frequency, affected models, and deep links to sample traces.
+        </p>
+      </section>
+
+      <!-- Section: Trace Regression Diff -->
+      <section id="debug-compare" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Comparative Trace Regression Diff</h2>
+        <p class="text-slate-300">
+          Open two traces side-by-side to immediately compare durations, token inflations, cost variances, and prompt differences to determine why a regression occurred.
+        </p>
+      </section>
+
+      <!-- Section: Self-Hosting & Deployment -->
+      <section id="deploy-docker" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold">
+          Chapter 6 &bull; Self-Hosting & Operations
+        </div>
+        <h2 class="text-xl font-bold font-mono text-white">Production Docker Deployment</h2>
+        <p class="text-slate-300">
+          Deploy Obs_AI as a single all-in-one container using SQLite Write-Ahead Logging:
+        </p>
+        <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 overflow-x-auto whitespace-pre leading-relaxed glass-inner"><code><span class="text-purple-400">version:</span> <span class="text-emerald-300">'3.8'</span>
+<span class="text-purple-400">services:</span>
+  <span class="text-purple-400">obs_ai:</span>
+    <span class="text-purple-400">image:</span> <span class="text-emerald-300">obs_ai/obs_ai:latest</span>
+    <span class="text-purple-400">ports:</span>
+      - <span class="text-emerald-300">"8000:8000"</span>
+    <span class="text-purple-400">environment:</span>
+      - <span class="text-emerald-300">OBS_AI_DATABASE_URL=sqlite:////app/data/obs_ai.db</span>
+      - <span class="text-emerald-300">OBS_AI_RETENTION_DAYS=30</span>
+    <span class="text-purple-400">volumes:</span>
+      - <span class="text-emerald-300">obs_ai_data:/app/data</span>
+    <span class="text-purple-400">restart:</span> <span class="text-emerald-300">unless-stopped</span></code></pre>
+      </section>
+
+      <!-- Section: Environment Variables -->
+      <section id="deploy-env" class="space-y-4 border-b border-slate-800/80 pb-10">
+        <h2 class="text-xl font-bold font-mono text-white">Environment Variables Reference</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse border border-[#1e2330]">
+            <thead>
+              <tr class="bg-[#0d111a] text-slate-300 font-mono">
+                <th class="p-2.5 border border-[#1e2330]">Variable</th>
+                <th class="p-2.5 border border-[#1e2330]">Default</th>
+                <th class="p-2.5 border border-[#1e2330]">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1e2330] font-mono text-slate-300">
+              <tr>
+                <td class="p-2.5 text-indigo-300">OBS_AI_DATABASE_URL</td>
+                <td class="p-2.5 text-slate-400">sqlite:////app/data/obs_ai.db</td>
+                <td class="p-2.5 text-slate-300">Database connection string (SQLite WAL or PostgreSQL)</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 text-indigo-300">OBS_AI_REDIS_URL</td>
+                <td class="p-2.5 text-slate-400">""</td>
+                <td class="p-2.5 text-slate-300">Optional Redis queue URL for distributed workers</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 text-indigo-300">OBS_AI_LOG_LEVEL</td>
+                <td class="p-2.5 text-slate-400">INFO</td>
+                <td class="p-2.5 text-slate-300">Logging level (DEBUG, INFO, WARNING, ERROR)</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 text-indigo-300">OBS_AI_RETENTION_DAYS</td>
+                <td class="p-2.5 text-slate-400">30</td>
+                <td class="p-2.5 text-slate-300">Automatic retention period for traces and spans</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section: Workspaces & Isolation -->
+      <section id="workspaces" class="space-y-6 border-b border-slate-800/80 pb-12">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold mb-2">
+            Chapter 6 &bull; Multi-Tenancy &amp; Workspaces
+          </div>
+          <h2 class="text-2xl font-bold font-mono text-white tracking-tight">Workspaces &amp; Isolation Architecture</h2>
+          <p class="text-slate-400 text-xs mt-1">
+            Obs_AI provides built-in multi-tenant workspace isolation, allowing teams to separate telemetry data across environments (e.g. Production, Staging, Dev) or distinct AI microservices under a single self-hosted server.
+          </p>
+        </div>
+
+        <!-- Flow diagram -->
+        <div class="p-5 rounded-2xl glass-inner space-y-4">
+          <h3 class="text-xs font-mono font-bold text-indigo-300 uppercase tracking-wider">The Workspace Lifecycle Flow</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs font-mono">
+            <div class="p-3 rounded-xl bg-[#080b11]/80 border border-white/10 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-indigo-400 font-bold">
+                <span class="w-5 h-5 rounded-full bg-indigo-900/60 flex items-center justify-center text-[11px]">1</span>
+                <span>Create Workspace</span>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+                Create a workspace (e.g. <code>prod-agent-service</code>) via the Web Dashboard Settings or <code>POST /api/v1/projects</code>.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#080b11]/80 border border-white/10 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-emerald-400 font-bold">
+                <span class="w-5 h-5 rounded-full bg-emerald-900/60 flex items-center justify-center text-[11px]">2</span>
+                <span>Generate API Key</span>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+                The server generates a unique cryptographic ingestion API key (<code>fn_...</code>) stored as a SHA-256 hash.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#080b11]/80 border border-white/10 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-purple-400 font-bold">
+                <span class="w-5 h-5 rounded-full bg-purple-900/60 flex items-center justify-center text-[11px]">3</span>
+                <span>Instrument App</span>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+                Pass the API key to <code>configure(api_key="fn_...")</code> in your Python backend or HTTP exporter.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#080b11]/80 border border-white/10 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-cyan-400 font-bold">
+                <span class="w-5 h-5 rounded-full bg-cyan-900/60 flex items-center justify-center text-[11px]">4</span>
+                <span>Isolated Queries</span>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+                Switch workspaces instantly in the dashboard top navigation bar to view isolated traces, analytics, and costs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SDK code example -->
+        <div class="space-y-2">
+          <h3 class="text-xs font-mono font-bold text-slate-300">Configuring Python SDK with Workspace Key</h3>
+          <pre class="p-4 rounded-xl font-mono text-xs text-slate-200 glass-inner overflow-x-auto"><code><span class="text-purple-400">from</span> obs_ai <span class="text-purple-400">import</span> configure, trace, span
+
+<span class="text-slate-500"># Bind all telemetry from this process to your dedicated workspace:</span>
+configure(
+    server_url=<span class="text-emerald-300">"http://localhost:8000"</span>,
+    api_key=<span class="text-emerald-300">"fn_abc123yourSecretKeyHere..."</span>,
+)
+
+<span class="text-indigo-400">@trace</span>(name=<span class="text-emerald-300">"customer_support_pipeline"</span>, span_type=<span class="text-emerald-300">"agent"</span>)
+<span class="text-purple-400">def</span> <span class="text-blue-400">run_task</span>(query: str):
+    <span class="text-purple-400">with</span> span(<span class="text-emerald-300">"kb_lookup"</span>, span_type=<span class="text-emerald-300">"retrieval"</span>):
+        <span class="text-purple-400">pass</span></code></pre>
+        </div>
+
+        <!-- Safety features -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+          <div class="p-3.5 rounded-xl glass-inner space-y-1">
+            <h4 class="text-indigo-300 font-bold flex items-center gap-1.5">
+              <span>🔒</span> Zero Data Bleed
+            </h4>
+            <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+              Traces, span error stacks, token costs, and LLM prompts are partitioned by workspace ID at the database layer. One workspace cannot access telemetry from another.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl glass-inner space-y-1">
+            <h4 class="text-rose-300 font-bold flex items-center gap-1.5">
+              <span>🗑️</span> Protected Cascade Deletion
+            </h4>
+            <p class="text-slate-400 font-sans text-[11px] leading-relaxed">
+              Deleting a workspace requires entering the exact confirmation text <code>delete workspace</code> and cascades through all associated spans, events, and API keys. The system prevents deleting the last remaining workspace.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: REST & WebSocket API -->
+      <section id="api-reference" class="space-y-6 border-b border-slate-800/80 pb-12">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-800 text-indigo-400 text-xs font-mono font-semibold mb-2">
+            Server API &bull; Complete Reference
+          </div>
+          <h2 class="text-2xl font-bold font-mono text-white tracking-tight">REST & WebSocket API Reference</h2>
+          <p class="text-slate-400 text-xs mt-1">
+            The Obs_AI server exposes high-performance asynchronous endpoints for ingestion, query filtering, deep analytics, project isolation, and live WebSocket telemetry push.
+          </p>
+        </div>
+
+        <!-- 1. Ingestion & Realtime Streaming -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>📥</span> 1. Ingestion &amp; Live Streaming
+          </h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/50 font-bold">POST</span>
+                  <strong class="text-white text-sm">/api/v1/traces</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Batch Ingestion</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Ingests an array of execution traces, child spans, token metrics, and execution events with asynchronous persistence. Supports Gzip compression via <code>Content-Encoding: gzip</code>.</p>
+              <div class="p-2.5 rounded bg-[#080b11]/80 border border-white/5 text-[11px] text-slate-400 overflow-x-auto">
+                <span class="text-indigo-400">Headers:</span> <code>Content-Type: application/json</code> &bull; <code>Content-Encoding: gzip</code> (optional) &bull; <code>X-Obs_AI-Api-Key: &lt;key&gt;</code> (optional)<br/>
+                <span class="text-emerald-400">Response (200):</span> <code>{"accepted": 10, "schema_version": "1.0"}</code>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800/50 font-bold">WS</span>
+                  <strong class="text-white text-sm">/api/v1/ws/telemetry</strong>
+                </div>
+                <span class="text-[10px] text-purple-400 font-sans">Real-time Stream</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Bi-directional WebSocket connection for live telemetry streaming. The server broadcasts events (<code>trace_ingested</code>, <code>trace_deleted</code>, <code>data_cleared</code>) directly to connected dashboard sessions.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Trace & Span Queries -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>🔍</span> 2. Traces &amp; Spans Exploration
+          </h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/traces</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Filter &amp; Paginate</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">List and search traces with multi-dimensional filtering, free-text prompt search, and sorting.</p>
+              <div class="p-2.5 rounded bg-[#080b11]/80 border border-white/5 text-[11px] text-slate-400 space-y-1">
+                <div><span class="text-amber-300">Query Parameters:</span></div>
+                <ul class="list-disc list-inside space-y-0.5 text-slate-300 pl-1 font-sans text-xs">
+                  <li><code>time_window</code>: <code>15m</code>, <code>1h</code>, <code>6h</code>, <code>24h</code>, <code>7d</code>, <code>30d</code>, <code>all</code></li>
+                  <li><code>status</code>: <code>all</code>, <code>ok</code>, <code>error</code></li>
+                  <li><code>environment</code>: <code>all</code>, <code>production</code>, <code>staging</code>, <code>development</code></li>
+                  <li><code>span_type</code>: <code>all</code>, <code>llm</code>, <code>retrieval</code>, <code>tool</code>, <code>agent</code></li>
+                  <li><code>model</code>: Filter by LLM model name (e.g. <code>gemini-2.0-flash</code>, <code>gpt-4o</code>)</li>
+                  <li><code>search</code>: Full-text substring search across trace names, prompt inputs, model names, and IDs</li>
+                  <li><code>min_duration_ms</code> / <code>max_duration_ms</code>: Filter by execution latency</li>
+                  <li><code>sort_by</code>: <code>newest</code>, <code>oldest</code>, <code>slowest</code>, <code>fastest</code>, <code>most_tokens</code>, <code>most_cost</code>, <code>most_spans</code>, <code>error</code></li>
+                  <li><code>limit</code> (1-500, default 100) &bull; <code>offset</code> (default 0)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/traces/{trace_id}</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Full Trace Details</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Retrieves the complete causality tree for a single trace, including child spans, prompt inputs, completions, error stack traces, token breakdowns, and calculated dollar costs.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/traces/{trace_id}/spans</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Span Waterfall</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Returns the ordered flat list of child spans with start timestamps, latencies, and parent IDs for timeline and flamegraph visualization.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/count/traces</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Counter</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Returns fast count of total ingested traces: <code>{"count": 1420}</code>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Observability & Analytics Engine -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>📊</span> 3. Observability &amp; Deep Analytics
+          </h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/analytics/overview</strong>
+                </div>
+                <span class="text-[10px] text-emerald-400 font-sans">Health &amp; Regression</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Returns system health score (0-100), latency percentiles (p50, p75, p90, p95, p99), KPI deltas vs previous window, time breakdown (LLM vs Retrieval vs Tools vs Other), and automated "What Changed?" regression analysis.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/analytics/models</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Model Breakdown</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Aggregates performance across LLM providers and models: requests, prompt &amp; completion tokens, total spend, p50/p95 latency, error rates, and average cost per query.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/analytics/tools</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">MCP &amp; Tool Calling</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Monitors tool invocations, execution failures, p50/p95 latency per tool, and latest invocation timestamps.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/analytics/retrieval</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Vector RAG Metrics</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Analyzes vector search and retrieval pipelines: average document chunks retrieved, average cosine/relevance scores, slow retrievals (>1s), and empty result alerts.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/analytics/agents</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">Multi-Step Agent Loops</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Evaluates autonomous agent execution runs: average step count, loop candidate detection (repeated tool calling &gt;3 times), total tokens, and goal completion rates.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/errors</strong>
+                </div>
+                <span class="text-[10px] text-rose-400 font-sans">Error Fingerprinting</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Groups exceptions into unique semantic fingerprints with stack traces, first seen / latest occurrence, occurrence counts, and list of affected model names and trace IDs.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Workspaces & API Keys -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>🏢</span> 4. Multi-Tenant Workspaces &amp; API Keys
+          </h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/50 font-bold">GET</span>
+                  <strong class="text-white text-sm">/api/v1/projects</strong>
+                </div>
+                <span class="text-[10px] text-slate-500 font-sans">List Projects</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Lists all active workspaces and their creation dates.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/50 font-bold">POST</span>
+                  <strong class="text-white text-sm">/api/v1/projects</strong>
+                </div>
+                <span class="text-[10px] text-emerald-400 font-sans">Create Project &amp; Key</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Creates a new workspace and generates a raw API key (<code>obs_ai_live_...</code>) for SDK telemetry ingestion.</p>
+              <div class="p-2 rounded bg-[#080b11]/80 border border-white/5 text-[11px] text-slate-400">
+                <code>Payload: {"name": "production-llm-service"}</code>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50 font-bold">DELETE</span>
+                  <strong class="text-white text-sm">/api/v1/projects/{project_id}</strong>
+                </div>
+                <span class="text-[10px] text-rose-400 font-sans">Cascade Delete</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Deletes a workspace and cascade-deletes all its API keys, traces, spans, and telemetry logs. (Safety rule: cannot delete the only remaining workspace).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Admin & Maintenance Operations -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>🛡️</span> 5. Admin &amp; Data Maintenance
+          </h3>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50 font-bold">DELETE / POST</span>
+                  <strong class="text-white text-sm">/api/v1/admin/traces &bull; /api/v1/admin/traces/purge</strong>
+                </div>
+                <span class="text-[10px] text-rose-400 font-sans">Full Purge</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Permanently purges all database and in-memory telemetry data. Requires explicit confirmation payload <code>{"confirmation": "delete everything"}</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50 font-bold">POST</span>
+                  <strong class="text-white text-sm">/api/v1/admin/traces/batch-delete</strong>
+                </div>
+                <span class="text-[10px] text-rose-400 font-sans">Batch Delete</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Deletes multiple selected traces by IDs with <code>{"trace_ids": ["..."], "confirmation": "delete selected"}</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl glass-inner space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/50 font-bold">DELETE</span>
+                  <strong class="text-white text-sm">/api/v1/admin/traces/{trace_id}</strong>
+                </div>
+                <span class="text-[10px] text-rose-400 font-sans">Single Delete</span>
+              </div>
+              <p class="text-slate-300 font-sans text-xs">Deletes a specific trace and its child spans and events, broadcasting a <code>trace_deleted</code> event over WebSocket.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. System Probes & Health -->
+        <div class="space-y-3 pt-2">
+          <h3 class="text-sm font-mono font-bold text-indigo-300 flex items-center gap-2">
+            <span>⚙️</span> 6. System Probes &amp; Health
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="p-3 rounded-xl glass-inner space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 font-bold text-[10px]">GET</span>
+                <strong class="text-white">/health</strong>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px]">Liveness probe for load balancers and container orchestrators: <code>{"status": "ok"}</code>.</p>
+            </div>
+
+            <div class="p-3 rounded-xl glass-inner space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 font-bold text-[10px]">GET</span>
+                <strong class="text-white">/ready</strong>
+              </div>
+              <p class="text-slate-400 font-sans text-[11px]">Readiness check verifying database connection and background worker thread status.</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Section: FAQ -->
+      <section id="faq" class="space-y-4 pb-16">
+        <h2 class="text-xl font-bold font-mono text-white">Troubleshooting & FAQ</h2>
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-[#090d16] border border-[#1e2330] space-y-1.5">
+            <h4 class="font-bold text-white font-mono text-xs">Does Obs_AI slow down my application?</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              No. The Python SDK pushes spans to an in-memory queue, and a background thread flushes them asynchronously. Spans execute with zero network delay on user requests.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[#090d16] border border-[#1e2330] space-y-1.5">
+            <h4 class="font-bold text-white font-mono text-xs">Can I use Obs_AI with Ollama or local LLMs?</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Yes. Simply use the <code class="text-indigo-300">span()</code> context manager or OpenAI client wrapper pointed to your local Ollama/vLLM base URL.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Clean Footer -->
+  <footer class="py-8 border-t border-[#1e2330] bg-[#080b11] text-xs text-slate-400 select-none relative z-10 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs">
+        <span class="font-mono text-white font-bold">Obs_AI</span>
+        <span class="text-slate-600 hidden sm:inline">&bull;</span>
+        <span class="text-slate-400 text-[11px] sm:text-xs">Open-source AI debugger released under the Apache 2.0 license.</span>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] sm:text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">Overview</a>
+        <a href="docs.html" class="hover:text-white transition-colors">Documentation</a>
+        <a href="architecture.html" class="hover:text-white transition-colors">Architecture</a>
+        <a href="examples.html" class="hover:text-white transition-colors">Examples</a>
+        <a href="about.html" class="hover:text-white transition-colors">About</a>
+        <a href="community.html" class="hover:text-white transition-colors">Community</a>
+        <a href="https://github.com/DarshanAguru/Obs_AI.git" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 mt-4 border-t border-slate-800/60 text-center text-slate-500 font-mono text-[11px] flex items-center justify-center gap-1.5 flex-wrap">
+      <span>copyright &copy; <span class="currentYear"></span> obs_ai</span>
+      <span>|</span>
+      <span>made with <span class="inline-block text-rose-500 animate-pulse font-sans">❤️</span> by <a href="https://thisdarshiii.in" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-2 transition-colors">A.Darshan</a></span>
+    </div>
+  </footer>
+
+  <!-- Dynamic Table of Contents Active Scroll Tracker & Search Script -->
+  <script>
+    document.querySelectorAll('.currentYear').forEach(el => el.textContent = new Date().getFullYear());
+
+    // Mobile Navigation Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+    const hamburgerOpenIcon = document.getElementById('hamburgerOpenIcon');
+    const hamburgerCloseIcon = document.getElementById('hamburgerCloseIcon');
+
+    function toggleMobileMenu() {
+      if (!mobileMenu) return;
+      const isHidden = mobileMenu.classList.contains('hidden');
+      if (isHidden) {
+        mobileMenu.classList.remove('hidden');
+        if (mobileMenuBackdrop) mobileMenuBackdrop.classList.remove('hidden');
+        if (hamburgerOpenIcon) hamburgerOpenIcon.classList.add('hidden');
+        if (hamburgerCloseIcon) hamburgerCloseIcon.classList.remove('hidden');
+      } else {
+        mobileMenu.classList.add('hidden');
+        if (mobileMenuBackdrop) mobileMenuBackdrop.classList.add('hidden');
+        if (hamburgerOpenIcon) hamburgerOpenIcon.classList.remove('hidden');
+        if (hamburgerCloseIcon) hamburgerCloseIcon.classList.add('hidden');
+      }
+    }
+
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    }
+    if (mobileMenuBackdrop) {
+      mobileMenuBackdrop.addEventListener('click', toggleMobileMenu);
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        if (mobileMenu) mobileMenu.classList.add('hidden');
+        if (mobileMenuBackdrop) mobileMenuBackdrop.classList.add('hidden');
+        if (hamburgerOpenIcon) hamburgerOpenIcon.classList.remove('hidden');
+        if (hamburgerCloseIcon) hamburgerCloseIcon.classList.add('hidden');
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu || mobileMenu.classList.contains('hidden')) return;
+      const header = document.querySelector('header');
+      if (header && !header.contains(e.target)) {
+        mobileMenu.classList.add('hidden');
+        if (mobileMenuBackdrop) mobileMenuBackdrop.classList.add('hidden');
+        if (hamburgerOpenIcon) hamburgerOpenIcon.classList.remove('hidden');
+        if (hamburgerCloseIcon) hamburgerCloseIcon.classList.add('hidden');
+      }
+    });
+
+    // Mobile Table of Contents Sidebar Toggle
+    const mobileTocBtn = document.getElementById('mobileTocBtn');
+    const docsSidebar = document.getElementById('docsSidebar');
+    const mobileTocIcon = document.getElementById('mobileTocIcon');
+    if (mobileTocBtn && docsSidebar) {
+      mobileTocBtn.addEventListener('click', () => {
+        docsSidebar.classList.toggle('hidden');
+        if (mobileTocIcon) {
+          mobileTocIcon.classList.toggle('rotate-180');
+        }
+      });
+    }
+
+    function filterDocs(query) {
+      const q = query.toLowerCase().trim();
+      const groups = document.querySelectorAll('.doc-group');
+      groups.forEach(group => {
+        const links = group.querySelectorAll('.doc-link');
+        let anyVisible = false;
+        links.forEach(link => {
+          const text = link.innerText.toLowerCase();
+          if (!q || text.includes(q)) {
+            link.style.display = 'block';
+            anyVisible = true;
+          } else {
+            link.style.display = 'none';
+          }
+        });
+        group.style.display = anyVisible ? 'block' : 'none';
+      });
+    }
+
+    // Active Scroll Spy & Synchronized Sidebar Auto-Scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = Array.from(document.querySelectorAll('.doc-link'));
+      const sections = Array.from(document.querySelectorAll('main section[id]'));
+      const sidebar = document.getElementById('docsSidebar');
+      let currentActiveHref = '';
+      let isManualClick = false;
+
+      function autoScrollSidebar(activeLink) {
+        if (!sidebar || !activeLink) return;
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const linkRect = activeLink.getBoundingClientRect();
+
+        // Calculate link position relative to sidebar
+        const relativeTop = linkRect.top - sidebarRect.top;
+        const targetScrollTop = sidebar.scrollTop + relativeTop - (sidebar.clientHeight / 2) + (linkRect.height / 2);
+
+        sidebar.scrollTo({
+          top: Math.max(0, targetScrollTop),
+          behavior: 'smooth'
+        });
+      }
+
+      function activateLink(targetLink) {
+        if (!targetLink) return;
+        const href = targetLink.getAttribute('href');
+        if (currentActiveHref === href) return;
+        currentActiveHref = href;
+
+        links.forEach(link => {
+          if (link === targetLink) {
+            link.classList.add('active', 'text-indigo-400', 'font-semibold');
+            link.classList.remove('text-slate-400');
+            autoScrollSidebar(targetLink);
+          } else {
+            link.classList.remove('active', 'text-indigo-400', 'font-semibold');
+            link.classList.add('text-slate-400');
+          }
+        });
+      }
+
+      function updateActiveSection() {
+        if (isManualClick || !sections.length) return;
+
+        // Check if scrolled near bottom of page (reach last index points like FAQ)
+        const scrollBottom = window.innerHeight + window.scrollY;
+        const pageHeight = document.documentElement.scrollHeight;
+        if (scrollBottom >= pageHeight - 120) {
+          const lastSection = sections[sections.length - 1];
+          const lastLink = document.querySelector(`.doc-link[href="#${lastSection.id}"]`);
+          if (lastLink) {
+            activateLink(lastLink);
+            return;
+          }
+        }
+
+        // Find active section by top boundary
+        const headerThreshold = 140;
+        let activeSection = sections[0];
+        for (let i = 0; i < sections.length; i++) {
+          const rect = sections[i].getBoundingClientRect();
+          if (rect.top <= headerThreshold) {
+            activeSection = sections[i];
+          } else {
+            break;
+          }
+        }
+
+        if (activeSection) {
+          const matchingLink = document.querySelector(`.doc-link[href="#${activeSection.id}"]`);
+          if (matchingLink) {
+            activateLink(matchingLink);
+          }
+        }
+      }
+
+      window.addEventListener('scroll', updateActiveSection, { passive: true });
+      updateActiveSection();
+
+      // Click handling
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          isManualClick = true;
+          activateLink(link);
+          if (window.innerWidth < 768 && docsSidebar) {
+            docsSidebar.classList.add('hidden');
+          }
+          setTimeout(() => { isManualClick = false; }, 600);
+        });
+      });
+    });
+
+    // Interactive 3D Glowing & Elastic Dot Matrix Canvas (Desktop Only)
+    (function initDotMatrix() {
+      if (window.innerWidth < 768) return;
+      const canvas = document.getElementById('dotCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+      const spacing = 24;
+      const glowRadius = 120;
+      const maxPull = 4.5;
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth < 768) {
+          canvas.style.display = 'none';
+          return;
+        }
+        canvas.style.display = 'block';
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        mouse.targetX = -1000;
+        mouse.targetY = -1000;
+      });
+
+      function render() {
+        if (window.innerWidth < 768) return;
+        mouse.x += (mouse.targetX - mouse.x) * 0.14;
+        mouse.y += (mouse.targetY - mouse.y) * 0.14;
+
+        ctx.clearRect(0, 0, width, height);
+
+        for (let x = spacing / 2; x < width; x += spacing) {
+          for (let y = spacing / 2; y < height; y += spacing) {
+            const dx = mouse.x - x;
+            const dy = mouse.y - y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            let drawX = x;
+            let drawY = y;
+            let dotRadius = 0.9;
+            let alpha = 0.14;
+            let fillStyle = 'rgba(148, 163, 184, '; // Clean subtle faded greyish base
+
+            if (dist < glowRadius) {
+              const q = 1 - dist / glowRadius;
+              const factor = q * q * (3 - 2 * q);
+
+              const pullFactor = factor * maxPull;
+              const angle = Math.atan2(dy, dx);
+              drawX += Math.cos(angle) * pullFactor;
+              drawY += Math.sin(angle) * pullFactor;
+
+              dotRadius = 0.9 + factor * 1.6;
+              alpha = 0.14 + factor * 0.78;
+
+              if (factor > 0.6) {
+                fillStyle = 'rgba(167, 139, 250, ';
+              } else if (factor > 0.3) {
+                fillStyle = 'rgba(129, 140, 248, ';
+              } else {
+                fillStyle = 'rgba(56, 189, 248, ';
+              }
+            }
+
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, dotRadius, 0, Math.PI * 2);
+            ctx.fillStyle = fillStyle + alpha + ')';
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      requestAnimationFrame(render);
+    })();
+
+    // ── Card border directional glow — mousemove + rAF throttle (efficient) ──
+    (function initCardGlow() {
+      document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('pointermove', e => { const r = card.getBoundingClientRect(); card.style.setProperty('--drop-x', `${e.clientX - r.left}px`); card.style.setProperty('--drop-y', `${e.clientY - r.top}px`); card.style.setProperty('--drop-opacity', '1'); });
+        card.addEventListener('pointerleave', () => card.style.setProperty('--drop-opacity', '0'));
+      });
+      return;
+      // Cache card list once; re-query only on resize
+      let cards = Array.from(document.querySelectorAll('.glass-card'));
+      window.addEventListener('resize', () => { cards = Array.from(document.querySelectorAll('.glass-card')); });
+
+      let mx = -9999, my = -9999, rafId = null;
+
+      // Per-edge factor: cubic falloff over 110px reach
+      function ef(d) {
+        const v = 1 - Math.min(Math.max(d, 0), 110) / 110;
+        return v * v * v; // steep cubic — far edge fades hard
+      }
+
+      function applyGlow() {
+        rafId = null;
+        const vh = window.innerHeight;
+        cards.forEach(card => {
+          const r = card.getBoundingClientRect();
+          if (r.bottom < -80 || r.top > vh + 80) return;
+
+          // Per-edge proximity (0 = far/opposite, 1 = cursor on/past that edge)
+          const fL = ef(mx - r.left);    // left border
+          const fR = ef(r.right  - mx);  // right border
+          const fT = ef(my - r.top);     // top border
+          const fB = ef(r.bottom - my);  // bottom border
+
+          const peak = Math.max(fL, fR, fT, fB);
+          if (peak < 0.008) {
+            card.style.borderColor = '';
+            card.style.boxShadow   = '';
+            return;
+          }
+
+          // 4 directional outer-glow shadows — each only illuminates its own side
+          const sp = 12, bl = 18, mA = 0.60;
+          const sL = `${(-sp * fL).toFixed(1)}px 0 ${bl}px rgba(99,102,241,${(fL*mA).toFixed(2)})`;
+          const sR = `${( sp * fR).toFixed(1)}px 0 ${bl}px rgba(99,102,241,${(fR*mA).toFixed(2)})`;
+          const sT = `0 ${(-sp * fT).toFixed(1)}px ${bl}px rgba(99,102,241,${(fT*mA).toFixed(2)})`;
+          const sB = `0 ${ (sp * fB).toFixed(1)}px ${bl}px rgba(99,102,241,${(fB*mA).toFixed(2)})`;
+
+          card.style.borderColor = `rgba(99,102,241,${(peak * 0.65).toFixed(2)})`;
+          card.style.boxShadow   = `${sL},${sR},${sT},${sB},0 4px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.07)`;
+        });
+      }
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        if (!rafId) rafId = requestAnimationFrame(applyGlow);
+      });
+
+      // Reset all on mouse leave
+      document.addEventListener('mouseleave', () => {
+        mx = -9999; my = -9999;
+        cards.forEach(c => { c.style.borderColor = ''; c.style.boxShadow = ''; });
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      });
+    })();
+  </script>
+
+  <!-- Interactive 3D Glowing & Elastic Dot Matrix Canvas Background (Desktop Only) -->
+  <canvas id="dotCanvas" class="fixed inset-0 pointer-events-none hidden md:block" style="z-index:0"></canvas>
+</body>
+</html>

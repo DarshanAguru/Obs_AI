@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="obs-ai-grad" x1="10" y1="12" x2="54" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8" />
+      <stop offset="0.5" stop-color="#6366F1" />
+      <stop offset="1" stop-color="#8B5CF6" />
+    </linearGradient>
+    <linearGradient id="obs-ai-glow" x1="10" y1="16" x2="54" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.08" />
+    </linearGradient>
+  </defs>
+
+  <!-- Observability Lens Contour -->
+  <path d="M 10 32 C 18 17, 46 17, 54 32 C 46 47, 18 47, 10 32 Z" fill="url(#obs-ai-glow)" stroke="url(#obs-ai-grad)" stroke-width="2.5" stroke-linejoin="round" />
+
+  <!-- Concentric Aperture Telemetry Ring -->
+  <circle cx="32" cy="32" r="10.5" stroke="#818CF8" stroke-width="1.5" stroke-dasharray="3.5 2.5" />
+
+  <!-- Neural Telemetry Interconnects -->
+  <path d="M 32 15 L 32 21.5 M 32 42.5 L 32 49 M 21 21 L 28 28 M 43 21 L 36 28 M 21 43 L 28 36 M 43 43 L 36 36" stroke="#818CF8" stroke-width="1.2" stroke-linecap="round" opacity="0.85" />
+
+  <!-- AI Neural Trace Nodes -->
+  <circle cx="32" cy="12" r="3" fill="#38BDF8" />
+  <circle cx="32" cy="52" r="3" fill="#8B5CF6" />
+  <circle cx="10" cy="32" r="3" fill="#6366F1" />
+  <circle cx="54" cy="32" r="3" fill="#38BDF8" />
+  <circle cx="21" cy="21" r="2" fill="#A5B4FC" />
+  <circle cx="43" cy="21" r="2" fill="#38BDF8" />
+  <circle cx="21" cy="43" r="2" fill="#818CF8" />
+  <circle cx="43" cy="43" r="2" fill="#C084FC" />
+
+  <!-- Central Telemetry Core -->
+  <circle cx="32" cy="32" r="5" fill="url(#obs-ai-grad)" />
+  <circle cx="32" cy="32" r="2.2" fill="#FFFFFF" />
+</svg>
