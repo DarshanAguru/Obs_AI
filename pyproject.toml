@@ -10,7 +10,7 @@ readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
 authors = [
-    { name = "Darshan", email = "hello@feenion.fun" }
+    { name = "Darshan", email = "agurudf@gmail.com" }
 ]
 keywords = [
     "ai",
@@ -93,8 +93,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://feenion.fun"
-Documentation = "https://feenion.fun/docs"
+Homepage = "https://github.com/DarshanAguru/Obs_AI"
+Documentation = "https://github.com/DarshanAguru/Obs_AI#readme"
 Repository = "https://github.com/DarshanAguru/Obs_AI.git"
 Issues = "https://github.com/DarshanAguru/Obs_AI/issues"
 Changelog = "https://github.com/DarshanAguru/Obs_AI/releases"

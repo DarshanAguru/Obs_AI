@@ -10,11 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://feenion.fun">Website</a> •
-  <a href="https://feenion.fun/docs">Documentation</a> •
-  <a href="https://feenion.fun/architecture">Architecture</a> •
-  <a href="https://feenion.fun/examples">Examples</a> •
-  <a href="#quickstart">Quickstart</a>
+  <a href="https://github.com/DarshanAguru/Obs_AI">GitHub</a> •
+  <a href="#-what-is-obs_ai">About</a> •
+  <a href="#-quickstart">Quickstart</a> •
+  <a href="#%EF%B8%8F-system-architecture">Architecture</a> •
+  <a href="#-framework-integrations">Integrations</a> •
+  <a href="#-pluggable-telemetry-exporters">Exporters</a>
 </p>
 
 <p align="center">

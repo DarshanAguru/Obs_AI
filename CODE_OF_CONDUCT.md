@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces, including GitHub repos
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at **conduct@feenion.fun** or via GitHub private reporting. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at **agurudf@gmail.com** or via GitHub private reporting. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 

@@ -67,8 +67,8 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://feenion.fun"
-Documentation = "https://feenion.fun/docs"
+Homepage = "https://github.com/DarshanAguru/Obs_AI"
+Documentation = "https://github.com/DarshanAguru/Obs_AI#readme"
 Repository = "https://github.com/DarshanAguru/Obs_AI.git"
 Issues = "https://github.com/DarshanAguru/Obs_AI/issues"
 Changelog = "https://github.com/DarshanAguru/Obs_AI/releases"
